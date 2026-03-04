@@ -266,7 +266,7 @@
                         <input type="number" id="workoutReps" placeholder="Reps">
                     </div>
                     <input type="number" id="workoutWeight" placeholder="Weight (lbs/kg)" style="margin-bottom: 16px;">
-                    <button onclick="addWorkout()">Add Workout</button>
+                    <button onclick="if(document.getElementById('workoutExercise').value && document.getElementById('workoutSets').value && document.getElementById('workoutReps').value){logs.workouts.push({date:document.getElementById('workoutDate').value,exercise:document.getElementById('workoutExercise').value,sets:document.getElementById('workoutSets').value,reps:document.getElementById('workoutReps').value,weight:document.getElementById('workoutWeight').value,id:Date.now()});document.getElementById('workoutExercise').value='';document.getElementById('workoutSets').value='';document.getElementById('workoutReps').value='';document.getElementById('workoutWeight').value='';save();}else{alert('Please fill in exercise, sets, and reps');}">Add Workout</button>
                 </div>
                 <h3>Workout Log</h3>
                 <div id="workoutList"></div>
@@ -280,7 +280,7 @@
                     <input type="number" id="activitySteps" placeholder="Steps">
                     <input type="number" id="activityCalories" placeholder="Calories Burnt">
                     <input type="number" id="activityTime" placeholder="Active Time (min)" style="margin-bottom: 16px;">
-                    <button onclick="addActivity()">Log Activity</button>
+                    <button onclick="if(document.getElementById('activitySteps').value || document.getElementById('activityCalories').value || document.getElementById('activityTime').value){logs.activity.push({date:document.getElementById('activityDate').value,steps:document.getElementById('activitySteps').value||0,calories:document.getElementById('activityCalories').value||0,time:document.getElementById('activityTime').value||0,id:Date.now()});document.getElementById('activitySteps').value='';document.getElementById('activityCalories').value='';document.getElementById('activityTime').value='';save();}else{alert('Please enter at least one value');}" >Log Activity</button>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -313,7 +313,7 @@
                         <input type="date" id="nutritionDate" value="">
                         <input type="number" id="nutritionCalories" placeholder="Calories">
                         <textarea id="nutritionNotes" placeholder="Notes" style="height: 60px; margin-bottom: 16px;"></textarea>
-                        <button onclick="addNutrition()">Add Entry</button>
+                        <button onclick="if(document.getElementById('nutritionCalories').value){logs.nutrition.push({date:document.getElementById('nutritionDate').value,calories:document.getElementById('nutritionCalories').value,notes:document.getElementById('nutritionNotes').value,id:Date.now()});document.getElementById('nutritionCalories').value='';document.getElementById('nutritionNotes').value='';save();}else{alert('Please enter calories');}">Add Entry</button>
                     </div>
                 </div>
                 <div class="card" style="text-align: center;">
@@ -331,7 +331,7 @@
                     <h3>Log Weight</h3>
                     <input type="date" id="weightDate" value="">
                     <input type="number" id="weightValue" placeholder="Weight (lbs/kg)" step="0.1" style="margin-bottom: 16px;">
-                    <button onclick="addWeight()">Record Weight</button>
+                    <button onclick="if(document.getElementById('weightValue').value){logs.weight.push({date:document.getElementById('weightDate').value,weight:document.getElementById('weightValue').value,id:Date.now()});document.getElementById('weightValue').value='';save();}else{alert('Please enter weight');}">Record Weight</button>
                 </div>
                 <h3>Weight History</h3>
                 <div id="weightList"></div>
@@ -409,54 +409,4 @@
         }
 
         function addNutrition() {
-            if (document.getElementById('nutritionCalories').value) {
-                logs.nutrition.push({
-                    date: document.getElementById('nutritionDate').value,
-                    calories: document.getElementById('nutritionCalories').value,
-                    notes: document.getElementById('nutritionNotes').value,
-                    id: Date.now()
-                });
-                document.getElementById('nutritionCalories').value = '';
-                document.getElementById('nutritionNotes').value = '';
-                save();
-            }
-        }
-
-        function addWeight() {
-            if (document.getElementById('weightValue').value) {
-                logs.weight.push({
-                    date: document.getElementById('weightDate').value,
-                    weight: document.getElementById('weightValue').value,
-                    id: Date.now()
-                });
-                document.getElementById('weightValue').value = '';
-                save();
-            }
-        }
-
-        function addPhoto(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    logs.photos.push({
-                        src: event.target.result,
-                        date: new Date().toISOString().split('T')[0],
-                        id: Date.now()
-                    });
-                    save();
-                    document.getElementById('progressPhoto').value = '';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function deleteEntry(type, id) {
-            logs[type] = logs[type].filter(entry => entry.id !== id);
-            save();
-        }
-
-        function switchTab(tabName) {
-            // Remove active from all tabs and buttons
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
- 
+            if
