@@ -239,7 +239,7 @@
                     <li>Paste it below</li>
                 </ol>
                 <input type="password" id="apiKeyInput" placeholder="Paste your API key..." style="margin-top: 16px;">
-                <button onclick="saveApiKey()" style="margin-bottom: 8px;">Save API Key</button>
+                <button onclick="const key = document.getElementById('apiKeyInput').value; localStorage.setItem('anthropic_api_key', key); alert('✓ API key saved!'); document.getElementById('apiKeyInput').value = ''; document.getElementById('setupModal').classList.remove('active');" style="margin-bottom: 8px;">Save API Key</button>
                 <button onclick="document.getElementById('setupModal').classList.toggle('active')" style="background: #334155; color: #e2e8f0;">Close</button>
             </div>
         </div>
@@ -304,8 +304,12 @@
             <div class="tab-content" id="nutrition">
                 <div class="card">
                     <h3>Log Food</h3>
-                    <div style="border-top: 1px solid rgba(255, 215, 0, 0.2); padding-top: 16px;">
-                        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 8px;">Log your meal:</p>
+                    <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">📸 Analyze a food photo:</p>
+                    <input type="file" id="foodPhoto" accept="image/*" onchange="analyzeFoodPhoto(event)">
+                    <p id="analysisStatus" style="font-size: 12px; color: #FFD700; margin-top: 8px; display: none;">Analyzing photo...</p>
+                    
+                    <div style="border-top: 1px solid rgba(255, 215, 0, 0.2); padding-top: 16px; margin-top: 16px;">
+                        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 8px;">Or log manually:</p>
                         <input type="date" id="nutritionDate" value="">
                         <input type="number" id="nutritionCalories" placeholder="Calories">
                         <textarea id="nutritionNotes" placeholder="Notes" style="height: 60px; margin-bottom: 16px;"></textarea>
@@ -455,18 +459,4 @@
         function switchTab(tabName) {
             // Remove active from all tabs and buttons
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Add active to selected tab and button
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        }
-
-        function toggleSetup() {
-            document.getElementById('setupModal').classList.toggle('active');
-        }
-
-        function saveApiKey() {
-            const key = document.getElementById('apiKeyInput').value;
-            localStorage.setItem('anthropic_api_key', key);
-            alert('✓ AP
+ 
