@@ -1,0 +1,49 @@
+{
+  "name": "GAIN & LOSE - Fitness Tracker",
+  "short_name": "GAIN & LOSE",
+  "description": "AI-powered fitness tracking with meal analysis and smartwatch integration",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#001a4d",
+  "theme_color": "#FFD700",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23003087' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' text-anchor='middle' dy='.3em' fill='%23FFD700' font-family='monospace'>G&L</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23003087' width='512' height='512'/><text x='50%' y='50%' font-size='220' font-weight='bold' text-anchor='middle' dy='.3em' fill='%23FFD700' font-family='monospace'>G&L</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23003087' width='540' height='720'/><text x='50%' y='50%' font-size='100' font-weight='bold' text-anchor='middle' dy='.3em' fill='%23FFD700' font-family='monospace'>Fitness Tracker</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["health", "fitness"],
+  "shortcuts": [
+    {
+      "name": "Log Workout",
+      "short_name": "Workout",
+      "description": "Quickly log a new workout",
+      "url": "/?tab=workout",
+      "icons": []
+    },
+    {
+      "name": "Log Meal",
+      "short_name": "Meal",
+      "description": "Log your food with photo analysis",
+      "url": "/?tab=nutrition",
+      "icons": []
+    }
+  ]
+}
