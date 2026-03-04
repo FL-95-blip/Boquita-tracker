@@ -2,7 +2,7 @@
   "name": "GAIN & LOSE - Fitness Tracker",
   "short_name": "GAIN & LOSE",
   "description": "AI-powered fitness tracking with meal analysis and smartwatch integration",
-  "start_url": "/",
+  "start_url": "/Boquita-tracker/",
   "display": "standalone",
   "background_color": "#001a4d",
   "theme_color": "#FFD700",
