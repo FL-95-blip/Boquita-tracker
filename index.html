@@ -246,11 +246,11 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('workout', event)">💪 Workouts</button>
-            <button class="tab-btn" onclick="switchTab('activity', event)">⌚ Activity</button>
-            <button class="tab-btn" onclick="switchTab('nutrition', event)">🍽️ Nutrition</button>
-            <button class="tab-btn" onclick="switchTab('weight', event)">⚖️ Weight</button>
-            <button class="tab-btn" onclick="switchTab('photos', event)">📸 Photos</button>
+            <button class="tab-btn active" data-tab="workout" onclick="switchTab('workout')">💪 Workouts</button>
+            <button class="tab-btn" data-tab="activity" onclick="switchTab('activity')">⌚ Activity</button>
+            <button class="tab-btn" data-tab="nutrition" onclick="switchTab('nutrition')">🍽️ Nutrition</button>
+            <button class="tab-btn" data-tab="weight" onclick="switchTab('weight')">⚖️ Weight</button>
+            <button class="tab-btn" data-tab="photos" onclick="switchTab('photos')">📸 Photos</button>
         </div>
 
         <!-- Content -->
@@ -452,11 +452,14 @@
             save();
         }
 
-        function switchTab(tabName, event) {
+        function switchTab(tabName) {
+            // Remove active from all tabs and buttons
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active to selected tab and button
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         }
 
         function toggleSetup() {
@@ -489,5 +492,4 @@
             // Activity
             const todayActivity = logs.activity.filter(a => a.date === today);
             document.getElementById('todaySteps').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.steps), 0).toLocaleString();
-            document.getElementById('todayCals').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.calories), 0);
-            document.getElementById('todayTime').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.t
+            document.getElemen
