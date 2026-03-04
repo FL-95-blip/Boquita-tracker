@@ -4,25 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#FFD700">
-    <meta name="description" content="AI-powered fitness tracking with meal analysis and smartwatch integration">
-    
-    <!-- PWA Manifest -->
+    <meta name="description" content="AI-powered fitness tracking">
     <link rel="manifest" href="manifest.json">
-    
-    <!-- App icons -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23003087' width='180' height='180'/><text x='50%' y='50%' font-size='80' font-weight='bold' text-anchor='middle' dy='.3em' fill='%23FFD700' font-family='monospace'>GL</text></svg>">
-    
-    <!-- Status bar styling for iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="GAIN & LOSE">
-    
-    <!-- Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="msapplication-TileColor" content="#FFD700">
-    
     <title>GAIN & LOSE - Fitness Tracker</title>
-    
     <style>
         * {
             margin: 0;
@@ -35,123 +19,475 @@
             height: 100%;
             background: #001a4d;
             color: #e2e8f0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        }
-        
-        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             overflow: hidden;
         }
         
-        #root {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+        body { padding-top: env(safe-area-inset-top); }
         
-        .app-loading {
-            width: 100%;
-            height: 100%;
+        .container { width: 100%; height: 100%; display: flex; flex-direction: column; }
+        
+        header {
+            padding: 16px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, rgba(0, 48, 135, 0.1), rgba(0, 30, 80, 0.1));
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: #001a4d;
         }
         
-        .app-loading-text {
-            font-size: 28px;
+        .header-left h1 {
+            font-size: 24px;
             font-weight: bold;
             background: linear-gradient(135deg, #FFD700 0%, #FFC72C 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 20px;
             font-family: monospace;
         }
         
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 215, 0, 0.2);
-            border-top-color: #FFD700;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .header-left p { font-size: 12px; color: #FFD700; }
+        
+        .setup-btn {
+            background: rgba(0, 48, 135, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+            overflow-x: auto;
+            padding: 0 16px;
+            background: rgba(0, 48, 135, 0.05);
         }
         
-        input, textarea, select {
+        .tab-btn {
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            color: #FFD700;
+            border-bottom-color: #FFD700;
+        }
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .card {
+            background: linear-gradient(135deg, rgba(0, 48, 135, 0.2) 0%, rgba(0, 30, 80, 0.2) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
+            margin-bottom: 16px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            background-color: rgba(0, 48, 135, 0.15);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            color: #e2e8f0;
+            padding: 10px 16px;
+            border-radius: 8px;
             font-size: 16px;
+            margin-bottom: 8px;
+            font-family: inherit;
         }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background-color: rgba(0, 48, 135, 0.25);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC72C 100%);
+            color: #003087;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        button:active { transform: scale(0.98); }
+        
+        .entry {
+            background: rgba(0, 48, 135, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+        
+        .entry-info h4 { color: #FFD700; margin-bottom: 4px; }
+        .entry-info p { font-size: 12px; color: #94a3b8; }
+        .entry-info .date { font-size: 10px; color: #64748b; margin-top: 4px; }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            background: rgba(0, 48, 135, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        
+        .stat-label { font-size: 12px; color: #94a3b8; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #FFD700; margin-top: 8px; }
+        
+        h3 { color: #FFD700; margin-bottom: 12px; font-size: 18px; }
+        
+        .empty-state {
+            text-align: center;
+            color: #94a3b8;
+            padding: 32px 16px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        
+        .modal.active { display: flex; }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 48, 135, 0.2) 0%, rgba(0, 30, 80, 0.2) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal h2 { color: #FFD700; margin-bottom: 16px; }
+        .modal p { margin-bottom: 8px; color: #cbd5e1; }
+        .modal ol { margin-left: 16px; color: #cbd5e1; font-size: 14px; }
+        .modal li { margin-bottom: 8px; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="app-loading">
-            <div class="app-loading-text">GAIN & LOSE</div>
-            <div class="spinner"></div>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1>GAIN & LOSE</h1>
+                <p>Track your progress</p>
+            </div>
+            <button class="setup-btn" onclick="toggleSetup()">⚙️ Setup</button>
+        </header>
+
+        <!-- Setup Modal -->
+        <div class="modal" id="setupModal">
+            <div class="modal-content">
+                <h2>Setup API Key</h2>
+                <p>Get your free API key from Anthropic:</p>
+                <ol>
+                    <li>Visit console.anthropic.com</li>
+                    <li>Sign up or log in</li>
+                    <li>Create an API key</li>
+                    <li>Paste it below</li>
+                </ol>
+                <input type="password" id="apiKeyInput" placeholder="Paste your API key..." style="margin-top: 16px;">
+                <button onclick="saveApiKey()" style="margin-bottom: 8px;">Save API Key</button>
+                <button onclick="toggleSetup()" style="background: #334155; color: #e2e8f0;">Close</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('workout', event)">💪 Workouts</button>
+            <button class="tab-btn" onclick="switchTab('activity', event)">⌚ Activity</button>
+            <button class="tab-btn" onclick="switchTab('nutrition', event)">🍽️ Nutrition</button>
+            <button class="tab-btn" onclick="switchTab('weight', event)">⚖️ Weight</button>
+            <button class="tab-btn" onclick="switchTab('photos', event)">📸 Photos</button>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Workout Tab -->
+            <div class="tab-content active" id="workout">
+                <div class="card">
+                    <h3>Log Workout</h3>
+                    <input type="date" id="workoutDate" value="">
+                    <input type="text" id="workoutExercise" placeholder="Exercise">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <input type="number" id="workoutSets" placeholder="Sets">
+                        <input type="number" id="workoutReps" placeholder="Reps">
+                    </div>
+                    <input type="number" id="workoutWeight" placeholder="Weight (lbs/kg)" style="margin-bottom: 16px;">
+                    <button onclick="addWorkout()">Add Workout</button>
+                </div>
+                <h3>Workout Log</h3>
+                <div id="workoutList"></div>
+            </div>
+
+            <!-- Activity Tab -->
+            <div class="tab-content" id="activity">
+                <div class="card">
+                    <h3>📱 Log Samsung Activity</h3>
+                    <input type="date" id="activityDate" value="">
+                    <input type="number" id="activitySteps" placeholder="Steps">
+                    <input type="number" id="activityCalories" placeholder="Calories Burnt">
+                    <input type="number" id="activityTime" placeholder="Active Time (min)" style="margin-bottom: 16px;">
+                    <button onclick="addActivity()">Log Activity</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Steps</div>
+                        <div class="stat-value" id="todaySteps">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cal Burnt</div>
+                        <div class="stat-value" id="todayCals">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active</div>
+                        <div class="stat-value" id="todayTime">0m</div>
+                    </div>
+                </div>
+                <h3>Activity Log</h3>
+                <div id="activityList"></div>
+            </div>
+
+            <!-- Nutrition Tab -->
+            <div class="tab-content" id="nutrition">
+                <div class="card">
+                    <h3>Log Food</h3>
+                    <div style="border-top: 1px solid rgba(255, 215, 0, 0.2); padding-top: 16px;">
+                        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 8px;">Log your meal:</p>
+                        <input type="date" id="nutritionDate" value="">
+                        <input type="number" id="nutritionCalories" placeholder="Calories">
+                        <textarea id="nutritionNotes" placeholder="Notes" style="height: 60px; margin-bottom: 16px;"></textarea>
+                        <button onclick="addNutrition()">Add Entry</button>
+                    </div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <p style="font-size: 12px; color: #94a3b8;">Today's Total</p>
+                    <p style="font-size: 32px; font-weight: bold; color: #FFD700;" id="todayCalories">0</p>
+                    <p style="font-size: 12px; color: #64748b;">calories</p>
+                </div>
+                <h3>Nutrition Log</h3>
+                <div id="nutritionList"></div>
+            </div>
+
+            <!-- Weight Tab -->
+            <div class="tab-content" id="weight">
+                <div class="card">
+                    <h3>Log Weight</h3>
+                    <input type="date" id="weightDate" value="">
+                    <input type="number" id="weightValue" placeholder="Weight (lbs/kg)" step="0.1" style="margin-bottom: 16px;">
+                    <button onclick="addWeight()">Record Weight</button>
+                </div>
+                <h3>Weight History</h3>
+                <div id="weightList"></div>
+            </div>
+
+            <!-- Photos Tab -->
+            <div class="tab-content" id="photos">
+                <div class="card">
+                    <h3>Upload Progress Photo</h3>
+                    <input type="file" id="progressPhoto" accept="image/*" onchange="addPhoto(event)">
+                </div>
+                <h3>Progress Gallery</h3>
+                <div id="photoList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"></div>
+            </div>
         </div>
     </div>
 
-    <!-- React & Required Libraries -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/react.production.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/recharts.min.js"></script>
-
-    <!-- Your app component with type="text/babel" for JSX transpilation -->
-    <script type="text/babel" src="app.js"></script>
-
-    <!-- Service Worker Registration -->
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js', { scope: '/Boquita-tracker/' })
-                    .then(registration => {
-                        console.log('ServiceWorker registered');
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker registration failed:', error);
+        // Initialize with today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('workoutDate').value = today;
+        document.getElementById('activityDate').value = today;
+        document.getElementById('nutritionDate').value = today;
+        document.getElementById('weightDate').value = today;
+
+        let logs = {
+            workouts: JSON.parse(localStorage.getItem('workouts') || '[]'),
+            activity: JSON.parse(localStorage.getItem('activity') || '[]'),
+            nutrition: JSON.parse(localStorage.getItem('nutrition') || '[]'),
+            weight: JSON.parse(localStorage.getItem('weight') || '[]'),
+            photos: JSON.parse(localStorage.getItem('photos') || '[]')
+        };
+
+        function save() {
+            localStorage.setItem('workouts', JSON.stringify(logs.workouts));
+            localStorage.setItem('activity', JSON.stringify(logs.activity));
+            localStorage.setItem('nutrition', JSON.stringify(logs.nutrition));
+            localStorage.setItem('weight', JSON.stringify(logs.weight));
+            localStorage.setItem('photos', JSON.stringify(logs.photos));
+            render();
+        }
+
+        function addWorkout() {
+            if (document.getElementById('workoutExercise').value && document.getElementById('workoutSets').value && document.getElementById('workoutReps').value) {
+                logs.workouts.push({
+                    date: document.getElementById('workoutDate').value,
+                    exercise: document.getElementById('workoutExercise').value,
+                    sets: document.getElementById('workoutSets').value,
+                    reps: document.getElementById('workoutReps').value,
+                    weight: document.getElementById('workoutWeight').value,
+                    id: Date.now()
+                });
+                document.getElementById('workoutExercise').value = '';
+                document.getElementById('workoutSets').value = '';
+                document.getElementById('workoutReps').value = '';
+                document.getElementById('workoutWeight').value = '';
+                save();
+            }
+        }
+
+        function addActivity() {
+            if (document.getElementById('activitySteps').value || document.getElementById('activityCalories').value || document.getElementById('activityTime').value) {
+                logs.activity.push({
+                    date: document.getElementById('activityDate').value,
+                    steps: document.getElementById('activitySteps').value || 0,
+                    calories: document.getElementById('activityCalories').value || 0,
+                    time: document.getElementById('activityTime').value || 0,
+                    id: Date.now()
+                });
+                document.getElementById('activitySteps').value = '';
+                document.getElementById('activityCalories').value = '';
+                document.getElementById('activityTime').value = '';
+                save();
+            }
+        }
+
+        function addNutrition() {
+            if (document.getElementById('nutritionCalories').value) {
+                logs.nutrition.push({
+                    date: document.getElementById('nutritionDate').value,
+                    calories: document.getElementById('nutritionCalories').value,
+                    notes: document.getElementById('nutritionNotes').value,
+                    id: Date.now()
+                });
+                document.getElementById('nutritionCalories').value = '';
+                document.getElementById('nutritionNotes').value = '';
+                save();
+            }
+        }
+
+        function addWeight() {
+            if (document.getElementById('weightValue').value) {
+                logs.weight.push({
+                    date: document.getElementById('weightDate').value,
+                    weight: document.getElementById('weightValue').value,
+                    id: Date.now()
+                });
+                document.getElementById('weightValue').value = '';
+                save();
+            }
+        }
+
+        function addPhoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    logs.photos.push({
+                        src: event.target.result,
+                        date: new Date().toISOString().split('T')[0],
+                        id: Date.now()
                     });
-            });
+                    save();
+                    document.getElementById('progressPhoto').value = '';
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
-        // Handle install prompt
-        let deferredPrompt;
-        const installButton = document.getElementById('install-btn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (installButton) {
-                installButton.style.display = 'block';
-            }
-        });
-
-        if (installButton) {
-            installButton.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`User response: ${outcome}`);
-                    deferredPrompt = null;
-                    if (installButton) {
-                        installButton.style.display = 'none';
-                    }
-                }
-            });
+        function deleteEntry(type, id) {
+            logs[type] = logs[type].filter(entry => entry.id !== id);
+            save();
         }
 
-        window.addEventListener('appinstalled', () => {
-            console.log('App was installed');
-            deferredPrompt = null;
-            if (installButton) {
-                installButton.style.display = 'none';
-            }
-        });
-    </script>
-</body>
-</html>
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleSetup() {
+            document.getElementById('setupModal').classList.toggle('active');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value;
+            localStorage.setItem('anthropic_api_key', key);
+            alert('✓ API key saved!');
+            document.getElementById('apiKeyInput').value = '';
+        }
+
+        function render() {
+            const today = new Date().toISOString().split('T')[0];
+
+            // Workouts
+            const workoutHTML = logs.workouts.length ? logs.workouts.map(w => `
+                <div class="entry">
+                    <div class="entry-info">
+                        <h4>${w.exercise}</h4>
+                        <p>${w.sets}x${w.reps} ${w.weight ? '@ ' + w.weight + 'lbs' : ''}</p>
+                        <div class="date">${w.date}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('workouts', ${w.id})">✕</button>
+                </div>
+            `).join('') : '<div class="empty-state">No workouts logged yet</div>';
+            document.getElementById('workoutList').innerHTML = workoutHTML;
+
+            // Activity
+            const todayActivity = logs.activity.filter(a => a.date === today);
+            document.getElementById('todaySteps').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.steps), 0).toLocaleString();
+            document.getElementById('todayCals').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.calories), 0);
+            document.getElementById('todayTime').textContent = todayActivity.reduce((sum, a) => sum + parseInt(a.t
